@@ -93,8 +93,8 @@ public partial class PlayerController : MonoBehaviour
 		Vector3 move = transform.right * x + transform.forward * z;
 		controller.Move(MoveSpeed * Time.deltaTime * move);
 
-		if (Input.GetButtonDown("Jump") && controller.isGrounded)
-			velocity.y = Mathf.Sqrt(JumpHeight * -2.0f * Gravity);
+//		if (Input.GetButtonDown("Jump") && controller.isGrounded)
+//			velocity.y = Mathf.Sqrt(JumpHeight * -2.0f * Gravity);
 
 		velocity.y += Gravity * Time.deltaTime;
 		controller.Move(velocity * Time.deltaTime);

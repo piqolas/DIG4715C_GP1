@@ -16,6 +16,9 @@ public partial class PlayerController
 	{
 		if (Input.GetKeyDown(KeyCode.V))
 		{
+			if (isNoclip)
+				velocity.y = 0.0f;
+
 			isNoclip = !isNoclip;
 			controller.enabled = !isNoclip;
 		}
