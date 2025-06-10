@@ -188,7 +188,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerCollider: {fileID: 3137876906709859280}
   LightObject: {fileID: 1257083321614322924}
-  _player: {fileID: 0}
+  CollectSound: {fileID: 8300000, guid: 7d39d71353435b547ab40030ceac9b6e, type: 3}
+  CollectSoundVolume: 0.75
   _lightObjectDist: 0
 --- !u!1001 &951416258569041410
 PrefabInstance:
