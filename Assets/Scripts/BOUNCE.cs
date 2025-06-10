@@ -22,7 +22,6 @@ public class BouncingAnimation : MonoBehaviour
 		Quaternion q = Quaternion.AngleAxis(Time.time * 360.0f * SpeedMul, Vector3.up);
 
 		// Float up and down
-		transform.position = _initialOffset + FloatHeight * Mathf.Sin(Time.time * Mathf.PI * FloatSpeedMul) * Vector3.up;
-		transform.rotation = q;
+		transform.SetPositionAndRotation(_initialOffset + FloatHeight * Mathf.Sin(Time.time * Mathf.PI * FloatSpeedMul) * Vector3.up, q);
 	}
 }
