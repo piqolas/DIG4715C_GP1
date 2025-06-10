@@ -17,6 +17,9 @@ Shader "Custom/VertexLit_PS1"
 		{
 			// legacy vertex-lit pipeline
 			Tags { "LightMode" = "Vertex" }
+			ZTest LEqual
+			Cull Off
+			ZWrite On
 
 			CGPROGRAM
 
@@ -123,10 +126,9 @@ Shader "Custom/VertexLit_PS1"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-			#if _AFFINE_ON
-				float2 uv = i.uv / i.pos.w;
-			#else
 				float2 uv = i.uv;
+			#if _AFFINE_ON
+				uv /= i.pos.w;
 			#endif
 				// 1) Sample & tint
 				float4 tex = tex2D(_MainTex, uv) * _Color;
@@ -139,6 +141,7 @@ Shader "Custom/VertexLit_PS1"
 			#endif
 
 				return lit;
+				// return float4(i.pos.w, 0.0, 0.0, 1.0);
 			}
 
 			ENDCG

@@ -49,6 +49,8 @@ public class PixelateBlit : MonoBehaviour
 
 			return;
 		}
+		else
+			_isActive = true;
 
 		// if (BlitShader == null)
 		// 	Debug.LogError($"Assign a {nameof(BlitShader)}!");

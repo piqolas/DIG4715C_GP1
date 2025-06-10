@@ -1404,14 +1404,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 465057285801512201, guid: 2d5368011ba944c48b377b7e7f10cd89, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 465057285801512201, guid: 2d5368011ba944c48b377b7e7f10cd89, type: 3}
-      propertyPath: FogEnabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1996148202769043953, guid: 2d5368011ba944c48b377b7e7f10cd89, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1451,10 +1443,6 @@ PrefabInstance:
     - target: {fileID: 1996148202769043953, guid: 2d5368011ba944c48b377b7e7f10cd89, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4424609456730614223, guid: 2d5368011ba944c48b377b7e7f10cd89, type: 3}
-      propertyPath: m_ClearFlags
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4461946116066107526, guid: 2d5368011ba944c48b377b7e7f10cd89, type: 3}
       propertyPath: isNoclip

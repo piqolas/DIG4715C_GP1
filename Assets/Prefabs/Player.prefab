@@ -153,8 +153,8 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 64
-  field of view: 90
+  far clip plane: 3600
+  field of view: 72.5
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -201,13 +201,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5101742409201261563}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1648cdc60c615bc498ec31f4c4b0f3b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 4424609456730614223}
-  FogEnabled: 1
+  FogEnabled: 0
   FogColor: {r: 0, g: 0, b: 0, a: 1}
   FogNearPadding: 0
   FogFarPadding: 16
