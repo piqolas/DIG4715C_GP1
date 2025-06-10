@@ -1,3 +1,6 @@
+# No idea if the unityyaml macro is even working (for me, at least; it requires a local git config),
+# but so far it hasn't broken anything so I'm keeping it in.
+
 # Macro for Unity YAML-based asset files.
 [attr]unityyaml -text merge=unityyamlmerge diff
 # Macro for all binary files that should use Git LFS.
@@ -17,9 +20,9 @@
 *.mat unityyaml
 *.anim unityyaml
 *.controller unityyaml
-*.overrideController unityyaml
-*.physicMaterial unityyaml
-*.physicsMaterial2D unityyaml
+*.override[Cc]ontroller unityyaml
+*.physic[Mm]aterial unityyaml
+*.physics[Mm]aterial2[Dd] unityyaml
 *.playable unityyaml
 *.mask unityyaml
 *.brush unityyaml
@@ -27,7 +30,7 @@
 *.fontsettings unityyaml
 *.guiskin unityyaml
 *.giparams unityyaml
-*.renderTexture unityyaml
+*.render[Tt]exture unityyaml
 *.spriteatlas unityyaml
 *.terrainlayer unityyaml
 *.mixer unityyaml
