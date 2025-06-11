@@ -6,3 +6,9 @@
    - A vertex-lit mesh can only receive lighting from 4 lights at once; this is an elementary engine limitation
    - The solution is to reduce the number of lights, _or_ spread them out _and_ merge the planes composing the walls and floor of the room such that lights can't interfere with one another at the edges of the meshes they light up
       - This could also be achieved by adding a `VertexLM` option to the shader, allowing static surfaces to be lightmapped during a baked lighting pass
+
+# How to Play
+- WASD to move
+- You can collect the MacGuffin and Key pickups by walking into them
+   - No button-presses required (other than the movement keys)
+- You can access the pause menu with the Escape key
