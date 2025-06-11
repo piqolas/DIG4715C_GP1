@@ -811,6 +811,62 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1607736258
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1607736260}
+  - component: {fileID: 1607736259}
+  m_Layer: 0
+  m_Name: AudioAtmos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1607736259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607736258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac45babb62a456747be6380381f0f5e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Delay: {x: 3.333333, y: 7.666667}
+  _soundPrefab: {fileID: 4684810254359586266, guid: a6f684baa6b671f42b922dbbae0d63b2, type: 3}
+  _ambientSounds:
+  - {fileID: 11400000, guid: ea55de6391ede724d94b4060f3b2cdaf, type: 2}
+  - {fileID: 11400000, guid: 22d3cc4ac95a9f34f95bb434453209d3, type: 2}
+  - {fileID: 11400000, guid: 71872cd448537d345b75b6a31a5778c6, type: 2}
+  - {fileID: 11400000, guid: ddfeb5d3347d32a44a48f9221bf7f35a, type: 2}
+  - {fileID: 11400000, guid: 5c3bb8eeb2c825844a097e0a4a804fc0, type: 2}
+  - {fileID: 11400000, guid: 1c89bbf6a7314ff49b7c14cd1b568a4c, type: 2}
+  - {fileID: 11400000, guid: bb630c13d049aea4e88f4d6f3b7982f1, type: 2}
+  - {fileID: 11400000, guid: 8efd075420998bb4a8e29ab72e70d778, type: 2}
+  _currentDelay: 0
+--- !u!4 &1607736260
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607736258}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1724186491 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4680450844431409611, guid: f737cdc0223acd549ac829e44c81fced, type: 3}
@@ -10443,3 +10499,4 @@ SceneRoots:
   - {fileID: 7458241122709873031}
   - {fileID: 7385665445120031469}
   - {fileID: 1016476040}
+  - {fileID: 1607736260}
