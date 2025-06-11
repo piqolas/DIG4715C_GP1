@@ -29,10 +29,10 @@ public partial class PlayerController : MonoBehaviour
 	[SerializeField, ReadOnly] private float xRot = 0.0f;
 	[SerializeField, ReadOnly] private Vector2 _greatestDelta = Vector2.zero;
 
-	/// <summary>
-	/// Used to swallow the first large delta after locking mouse input.
-	/// </summary>
-	private bool _cursorJustLocked = false;
+//	/// <summary>
+//	/// Used to swallow the first large delta after locking mouse input.
+//	/// </summary>
+//	private bool _cursorJustLocked = false;
 
 	private void Awake()
 	{
@@ -51,32 +51,32 @@ public partial class PlayerController : MonoBehaviour
 	// #endif
 
 	// #if UNITY_EDITOR
-		HandleCursorLockState();
+//		HandleCursorLockState();
 	// #endif
 		HandleMovement();
 		HandleMouseLook();
 	}
 
 // #if UNITY_EDITOR
-	private void HandleCursorLockState()
-	{
+//	private void HandleCursorLockState()
+//	{
 		// Press Esc to release
-		if (Input.GetKeyDown(KeyCode.Escape))
-		{
-			Cursor.lockState = CursorLockMode.None;
-			Cursor.visible = true;
-		}
+//		if (Input.GetKeyDown(KeyCode.Escape))
+//		{
+//			Cursor.lockState = CursorLockMode.None;
+//			Cursor.visible = true;
+//		}
 		// Left-click to re-capture
-		else if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
-			LockCursor();
-	}
+//		else if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
+//			LockCursor();
+//	}
 // #endif
 
 	private void LockCursor()
 	{
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
-		_cursorJustLocked = true;
+//		_cursorJustLocked = true;
 	}
 
 	private void HandleMovement()
@@ -107,11 +107,11 @@ public partial class PlayerController : MonoBehaviour
 			return;
 
 		// Swallow the first frame's input after locking to avoid jump
-		if (_cursorJustLocked)
-		{
-			_cursorJustLocked = false;
-			return;
-		}
+//		if (_cursorJustLocked)
+//		{
+//			_cursorJustLocked = false;
+//			return;
+//		}
 
 		Vector2 mouse = new(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
