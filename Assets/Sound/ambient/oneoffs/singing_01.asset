@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b5f22fe74b07224e978f6ffab11e244, type: 3}
-  m_Name: distant_creep_05
+  m_Name: singing_01
   m_EditorClassIdentifier: 
-  Sound: {fileID: 8300000, guid: 69ac5b010b66009429fdf21a08905e01, type: 3}
+  Sound: {fileID: 8300000, guid: 9dec1c0e637857e49bb1e213696f8f6f, type: 3}
   Priority: 128
   Type: 0
   Impetus: 0
   Positioning: 2
-  Distance: {x: 8.5, y: 13}
-  Volume: {x: 0.6666667, y: 0.925}
+  Distance: {x: 9, y: 13}
+  Volume: {x: 0.7, y: 0.825}
   Pitch: {x: 0.8, y: 1}
   Spatialize: 1
   StereoPan: 0

@@ -18,8 +18,8 @@ MonoBehaviour:
   Impetus: 0
   Positioning: 2
   Distance: {x: 8.5, y: 13}
-  Volume: {x: 1, y: 1}
-  Pitch: {x: 1, y: 1}
+  Volume: {x: 0.8, y: 0.9}
+  Pitch: {x: 0.8, y: 1}
   Spatialize: 1
   StereoPan: 0
   SpatialBlend: 1

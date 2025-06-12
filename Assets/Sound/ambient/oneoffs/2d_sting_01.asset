@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b5f22fe74b07224e978f6ffab11e244, type: 3}
-  m_Name: distant_creep_05
+  m_Name: 2d_sting_01
   m_EditorClassIdentifier: 
-  Sound: {fileID: 8300000, guid: 69ac5b010b66009429fdf21a08905e01, type: 3}
+  Sound: {fileID: 8300000, guid: 8d38ef0acb21b2f4daeec651358223c4, type: 3}
   Priority: 128
   Type: 0
   Impetus: 0
-  Positioning: 2
-  Distance: {x: 8.5, y: 13}
-  Volume: {x: 0.6666667, y: 0.925}
-  Pitch: {x: 0.8, y: 1}
-  Spatialize: 1
+  Positioning: 1
+  Distance: {x: 8, y: 8}
+  Volume: {x: 0.25, y: 0.25}
+  Pitch: {x: 0.775, y: 1}
+  Spatialize: 0
   StereoPan: 0
-  SpatialBlend: 1
+  SpatialBlend: 0
   ReverbZoneMix: 1
-  DopplerLevel: 0.25
+  DopplerLevel: 0
   Spread: 0
   RolloffCurveType: 0
   RolloffDistMinMax: {x: 1, y: 36}
