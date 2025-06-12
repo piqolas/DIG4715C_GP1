@@ -87,6 +87,7 @@ public class PixelateBlit : MonoBehaviour
 			filterMode = FilterMode.Point,
 			wrapMode = TextureWrapMode.Clamp,
 			antiAliasing = 1,
+			format = RenderTextureFormat.DefaultHDR
 		};
 
 		if (Camera.main != null)
