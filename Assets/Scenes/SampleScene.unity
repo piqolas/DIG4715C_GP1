@@ -1208,6 +1208,10 @@ PrefabInstance:
       value: chest
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 09b8fb784f399834fab03f997cd6bccd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 09b8fb784f399834fab03f997cd6bccd, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}

@@ -1,3 +1,7 @@
+// Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
+
+// Upgrade NOTE: commented out UNITY_DECLARE_TEX2D unity_Lightmap, a built-in variable
+
 Shader "Custom/VertexLit_PS1"
 {
 	Properties
@@ -7,6 +11,7 @@ Shader "Custom/VertexLit_PS1"
 		[Toggle] _JITTER ("Vertex Jitter", Float) = 1
 		_JitterGridScale ("Jitter Grid Scale", Range(0, 64)) = 16
 		[Toggle] _AFFINE ("Affine Texture Mapping", Float) = 1
+		[Toggle] _VERT_LIGHTMAPPING ("Vertex Shader Lightmapping", Float) = 1
 		[Toggle] _DEBUG_OOR ("Debug: Out of Range", Float) = 0
 	}
 	SubShader
@@ -55,7 +60,7 @@ Shader "Custom/VertexLit_PS1"
 			{
 				float4 pos                    : SV_POSITION;
 				float2 uv                     : TEXCOORD0;
-				noperspective float3 col      : COLOR;
+				noperspective fixed3 col      : COLOR;
 			#if USING_FOG
 				fixed fog                     : TEXCOORD1;
 			#endif
@@ -146,6 +151,7 @@ Shader "Custom/VertexLit_PS1"
 
 			#pragma shader_feature _JITTER_ON
 			#pragma shader_feature _AFFINE_ON
+			#pragma shader_feature _VERT_LIGHTMAPPING_ON
 			#pragma shader_feature _DEBUG_OOR_ON
 
 			#pragma multi_compile_fog
@@ -171,7 +177,7 @@ Shader "Custom/VertexLit_PS1"
 				float2 uv2                    : TEXCOORD0;
 				float2 uv1                    : TEXCOORD1;
 				float2 uv                     : TEXCOORD2;
-				noperspective float3 col      : COLOR;
+				noperspective fixed3 col      : COLOR;
 			#if USING_FOG
 				fixed fog                     : TEXCOORD3;
 			#endif
@@ -204,6 +210,12 @@ Shader "Custom/VertexLit_PS1"
 				o.uv *= o.pos.w;
 			#endif
 
+			o.col = (fixed3)0;
+
+			#if _VERT_LIGHTMAPPING_ON
+				o.col = SampleAndDecodeLightmapLOD(unity_Lightmap, o.uv2.xy, 0.0);
+			#endif
+
 				// Compute per-vertex lighting
 				//	ShadeVertexLights does up to 4 real-time vertex lights + ambient
 				o.col = ShadeVertexLights(v.vertex, v.normal);
@@ -228,11 +240,11 @@ Shader "Custom/VertexLit_PS1"
 				float4 tex = UNITY_SAMPLE_TEX2D(_MainTex, uv) * _Color;
 
 				// Capture the affine-interpolated vertex color
-				float3 vertCol = i.col;
+				float3 lightCol = i.col;
 				// Sample lightmap
-				float3 lightmapCol = SampleAndDecodeLightmap(unity_Lightmap, i.uv2.xy);
-				// Combine light colors
-				float3 lightCol = vertCol + lightmapCol;
+			#if !_VERT_LIGHTMAPPING
+				lightCol += SampleAndDecodeLightmap(unity_Lightmap, i.uv2.xy);
+			#endif
 
 				// lit.rgb *= tex.rgb;
 				//lit.rgb = HardLight(lit.rgb, bakedCol.rgb);
