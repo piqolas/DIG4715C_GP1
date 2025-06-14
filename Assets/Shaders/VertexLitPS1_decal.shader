@@ -1,9 +1,10 @@
-Shader "Custom/VertexLit_PS1"
+Shader "Custom/VertexLit_PS1_Decal"
 {
 	Properties
 	{
 		[MainTexture] _MainTex ("Texture", 2D) = "white" {}
 		[MainColor] _Color ("Tint", Color) = (1, 1, 1, 1)
+		_FalloffTex ("FallOff", 2D) = "white" {}
 		[Toggle] _JITTER ("Vertex Jitter", Float) = 1
 		_JitterGridScale ("Jitter Grid Scale", Range(0, 64)) = 16
 		[Toggle] _AFFINE ("Affine Texture Mapping", Float) = 1
@@ -12,7 +13,7 @@ Shader "Custom/VertexLit_PS1"
 	}
 	SubShader
 	{
-		Tags { /*"RenderType" = "Opaque",*/ "Queue" = "Transparent" }
+		Tags { /*"RenderType" = "Opaque",*/ "Queue" = "Transparent+1" }
 		// LOD 200
 
 		Pass
@@ -21,9 +22,12 @@ Shader "Custom/VertexLit_PS1"
 			Tags { "LightMode" = "Vertex" }
 
 			ZTest LEqual
-			Cull Off
-			ZWrite On
+			// Cull Front
+			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
+			// ColorMask RGB
+			// Blend DstColor SrcAlpha
+			// Offset -1, -1
 
 			CGPROGRAM
 
@@ -43,7 +47,11 @@ Shader "Custom/VertexLit_PS1"
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			sampler2D _FalloffTex;
 			float4 _Color;
+
+			float4x4 unity_Projector;
+			float4x4 unity_ProjectorClip;
 
 			struct appdata
 			{
@@ -61,6 +69,8 @@ Shader "Custom/VertexLit_PS1"
 			#if USING_FOG
 				fixed fog                     : TEXCOORD1;
 			#endif
+				float4 uvShadow               : TEXCOORD2;
+				float4 uvFalloff              : TEXCOORD3;
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
@@ -88,6 +98,9 @@ Shader "Custom/VertexLit_PS1"
 				o.uv *= o.pos.w;
 			#endif
 
+				o.uvShadow = mul(unity_Projector, v.vertex);
+				o.uvFalloff = mul(unity_ProjectorClip, v.vertex);
+
 				// Compute per-vertex lighting
 				//	ShadeVertexLights does up to 4 real-time vertex lights + ambient
 				o.col = ShadeVertexLights(v.vertex, v.normal);
@@ -108,12 +121,19 @@ Shader "Custom/VertexLit_PS1"
 				uv /= i.pos.w;
 			#endif
 				// 1) Sample & tint
-				float4 tex = tex2D(_MainTex, uv) * _Color;
+				// float4 tex = tex2D(_MainTex, uv) * _Color;
+				float4 tex = tex2Dproj(_MainTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
+				// tex.a = 1.0 - tex.a;
+				float4 texF = tex2Dproj(_FalloffTex, UNITY_PROJ_COORD(i.uvFalloff));
+				float4 lit = tex * texF.a;
+				// float4 lit = lerp(float4(1.0, 1.0, 1.0, 0.0), tex, texF.a);
+
 				// 2) Modulate by the affine-interpolated vertex color
-				float4 lit = tex * fixed4(i.col, 1.0);
+				lit *= float4(i.col, 1.0);
+
 				// 3) Apply fog
 			#if USING_FOG
-				lit.rgb = lerp(unity_FogColor.rgb, lit.rgb, i.fog);
+				lit.rgb = lerp(unity_FogColor.rgb, tex.rgb, i.fog);
 				//UNITY_APPLY_FOG(i.fogCoord, lit);
 			#endif
 
@@ -130,8 +150,12 @@ Shader "Custom/VertexLit_PS1"
 			Tags { "LightMode" = "VertexLM" }
 
 			ZTest LEqual
-			Cull Off
-			ZWrite On
+			// Cull Front
+			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
+			// ColorMask RGB
+			// Blend DstColor SrcAlpha
+			// Offset -1, -1
 
 			CGPROGRAM
 
@@ -154,10 +178,14 @@ Shader "Custom/VertexLit_PS1"
 			#pragma multi_compile_fog
 			#define USING_FOG (defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2))
 
-			UNITY_DECLARE_TEX2D(_MainTex);
+			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			float4 unity_Lightmap_ST;
+			sampler2D _FalloffTex;
 			float4 _Color;
+
+			float4x4 unity_Projector;
+			float4x4 unity_ProjectorClip;
 
 			struct appdata
 			{
@@ -176,8 +204,11 @@ Shader "Custom/VertexLit_PS1"
 				float2 uv                     : TEXCOORD2;
 				noperspective fixed3 col      : COLOR;
 			#if USING_FOG
-				fixed fog                     : TEXCOORD3;
+				UNITY_FOG_COORDS(3)
+				// float fog                     : TEXCOORD3;
 			#endif
+				float4 uvShadow               : TEXCOORD4;
+				float4 uvFalloff              : TEXCOORD5;
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
@@ -189,11 +220,15 @@ Shader "Custom/VertexLit_PS1"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 			#if USING_FOG
-				float3 eyePos = UnityObjectToViewPos(v.vertex);
-				float fogCoord = length(eyePos.xyz);
-				UNITY_CALC_FOG_FACTOR_RAW(fogCoord);
-				//UNITY_CALC_FOG_FACTOR_RAW(v.fogCoord);
-				o.fog = saturate(unityFogFactor);
+				// float3 eyePos = UnityObjectToViewPos(v.vertex);
+				// float fogCoord = length(eyePos.xyz);
+				// UNITY_CALC_FOG_FACTOR(fogCoord);
+
+				// UNITY_CALC_FOG_FACTOR_RAW(v.fogCoord);
+
+				// o.fog = saturate(unityFogFactor);
+
+				UNITY_TRANSFER_FOG(o, o.pos);
 			#endif
 
 				// Jitter the clip-space projection
@@ -207,11 +242,14 @@ Shader "Custom/VertexLit_PS1"
 				o.uv *= o.pos.w;
 			#endif
 
-			o.col = (fixed3)0;
+				o.col = (fixed3)0;
 
 			#if _VERT_LIGHTMAPPING_ON
 				o.col = SampleAndDecodeLightmapLOD(unity_Lightmap, o.uv2.xy, 0.0);
 			#endif
+
+				o.uvShadow = mul(unity_Projector, v.vertex);
+				o.uvFalloff = mul(unity_ProjectorClip, v.vertex);
 
 				// Compute per-vertex lighting
 				//	ShadeVertexLights does up to 4 real-time vertex lights + ambient
@@ -226,7 +264,7 @@ Shader "Custom/VertexLit_PS1"
 				return o;
 			}
 
-			float4 frag(v2f i) : SV_Target
+			fixed4 frag(v2f i) : SV_Target
 			{
 				float2 uv = i.uv;
 			#if _AFFINE_ON
@@ -234,83 +272,50 @@ Shader "Custom/VertexLit_PS1"
 			#endif
 
 				// Sample & tint
-				float4 tex = UNITY_SAMPLE_TEX2D(_MainTex, uv) * _Color;
+				// float4 tex = UNITY_SAMPLE_TEX2D(_MainTex, uv) * _Color;
+
+				fixed4 tex = tex2Dproj(_MainTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
+				fixed4 texF = tex2Dproj(_FalloffTex, UNITY_PROJ_COORD(i.uvFalloff));
+				fixed4 lightCol = tex * texF.a;
 
 				// Capture the affine-interpolated vertex color
-				float3 lightCol = i.col;
+				// float3 lightCol = i.col;
 				// Sample lightmap
-			#if !_VERT_LIGHTMAPPING
-				lightCol += SampleAndDecodeLightmap(unity_Lightmap, i.uv2.xy);
+			#if _VERT_LIGHTMAPPING_ON
+				lightCol.rgb *= i.col;
+			#else
+				lightCol.rgb *= SampleAndDecodeLightmap(unity_Lightmap, i.uv2.xy);
 			#endif
 
 				// lit.rgb *= tex.rgb;
 				//lit.rgb = HardLight(lit.rgb, bakedCol.rgb);
 				//fixed4 lit = fixed4(HardLight(tex.rgb, lightmapCol.rgb), 1.0);
-				float4 lit = float4(tex.rgb * lightCol.rgb, 1.0);
+				fixed4 lit = fixed4(tex.rgb * lightCol.rgb, lightCol.a);
 
 			#if _DEBUG_OOR_ON
-				float3 clamped = saturate(tex);
+				fixed3 clamped = saturate(tex);
 				// diff will be non-zero where col <0 or >1
 				bool3 diff = abs(tex.rgb - clamped.rgb) > 1.0f;
 				// collapse to a single mask (0 = in range,  >0 = out of range)
 				//float mask = max(max(diff.r, diff.g), diff.b);
 				// highlight color:
-				float3 highlight = diff ? fixed3(1.0, 1.0, 1.0) : tex.rgb;
+				fixed3 highlight = diff ? fixed3(1.0, 1.0, 1.0) : tex.rgb;
 				// lerp: when mask == 0 you get original; when mask > 0 you get highlight
 				lit.rgb = highlight;
 			#else
 
-				// 3) Apply fog
-				#if USING_FOG
-					lit.rgb = lerp(unity_FogColor.rgb, lit.rgb, i.fog);
-					//UNITY_APPLY_FOG(i.fogCoord, lit);
-				#endif
+			// 3) Apply fog
+			#if USING_FOG
+				// lit.rgb = lerp(unity_FogColor.rgb, lit.rgb, i.fog);
+				UNITY_APPLY_FOG_COLOR(i.fogCoord, lit, unity_FogColor.rgb);
+				// UNITY_APPLY_FOG(i.fogCoord, lit);
+			#endif
 
 			#endif
 
 				// return (tex < 0.5) ? 2.0 * tex * lightmap : 1.0 - 2.0 * (1.0 - tex) * (1.0 - lightmap);
 				return lit;
 				// return float4(i.pos.w, 0.0, 0.0, 1.0);
-			}
-
-			ENDCG
-		}
-
-		Pass
-		{
-			Name "ShadowCaster"
-			Tags { "LightMode" = "ShadowCaster" }
-
-			CGPROGRAM
-
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma target 2.0
-			#pragma multi_compile_shadowcaster
-			#pragma multi_compile_instancing // allow instanced shadow pass for most of the shaders
-
-			#include "UnityCG.cginc"
-
-			struct v2f
-			{
-				V2F_SHADOW_CASTER;
-				UNITY_VERTEX_OUTPUT_STEREO
-			};
-
-			v2f vert(appdata_base v)
-			{
-				v2f o;
-
-				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-
-				return o;
-			}
-
-			float4 frag(v2f i) : SV_Target
-			{
-				SHADOW_CASTER_FRAGMENT(i)
 			}
 
 			ENDCG
