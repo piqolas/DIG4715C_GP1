@@ -7,12 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: brick_001b
+  m_Name: brick_001b_noaffine
   m_Shader: {fileID: 4800000, guid: 22dd7c1e61339f249944b9a54b8731f4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _AFFINE_ON
   - _JITTER_ON
   - _VERT_LIGHTMAPPING_ON
   m_InvalidKeywords: []
@@ -68,7 +67,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AFFINE: 1
+    - _AFFINE: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DEBUG_OOR: 0
