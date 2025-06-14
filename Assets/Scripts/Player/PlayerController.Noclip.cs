@@ -1,4 +1,4 @@
-// #if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEngine;
 
 public partial class PlayerController
@@ -17,10 +17,10 @@ public partial class PlayerController
 		if (Input.GetKeyDown(KeyCode.V))
 		{
 			if (isNoclip)
-				velocity.y = 0.0f;
+				_velocity.y = 0.0f;
 
 			isNoclip = !isNoclip;
-			controller.enabled = !isNoclip;
+			_controller.enabled = !isNoclip;
 		}
 
 		if (isNoclip)
@@ -44,4 +44,4 @@ public partial class PlayerController
 		HandleMouseLook();
 	}
 }
-// #endif
+#endif
