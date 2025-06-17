@@ -34,13 +34,11 @@ public partial class PlayerController
 
 	private void HandleNoclip()
 	{
-		float x = Input.GetAxis("Horizontal");
-		float z = Input.GetAxis("Vertical");
 		float y = Input.GetKey(KeyCode.Space) ? 1.0f : (Input.GetKey(KeyCode.LeftControl) ? -1.0f : 0.0f);
 
-		Vector3 move = transform.right * x + transform.up * y + transform.forward * z;
-
+		Vector3 move = transform.right * _move.x + transform.forward * _move.y + transform.up * y;
 		transform.position += MoveSpeed * Time.deltaTime * move;
+
 		HandleMouseLook();
 	}
 }

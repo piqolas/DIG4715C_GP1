@@ -128,7 +128,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5537284352270798380}
   - component: {fileID: 3137876906709859280}
-  - component: {fileID: 6025515124443235193}
+  - component: {fileID: 8185480279693906396}
   m_Layer: 0
   m_Name: Macguffin
   m_TagString: Untagged
@@ -174,7 +174,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.25, y: 2.5, z: 1.25}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6025515124443235193
+--- !u!114 &8185480279693906396
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,10 +186,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d46fc9745c5650844814819541fc4a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TriggerCollider: {fileID: 3137876906709859280}
   LightObject: {fileID: 1257083321614322924}
   CollectSound: {fileID: 8300000, guid: 7d39d71353435b547ab40030ceac9b6e, type: 3}
-  CollectSoundVolume: 0.75
+  CollectSoundVolume: 0.7
+  _pickupType: 0
   _lightObjectDist: 0
 --- !u!1001 &951416258569041410
 PrefabInstance:

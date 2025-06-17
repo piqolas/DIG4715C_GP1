@@ -1,21 +1,20 @@
 using UnityEngine;
 using piqey.Utilities.Editor;
 
-public class PickupItem : MonoBehaviour
+public partial class PickupItem : MonoBehaviour
 {
-	public Collider TriggerCollider;
 	public GameObject LightObject;
 	public AudioClip CollectSound;
 	[Range(0.0f, 1.0f)]
 	public float CollectSoundVolume = 1.0f;
+
+	[SerializeField] private PickupType _pickupType = PickupType.MacGuffin;
 
 	// [SerializeField, ReadOnly] private GameObject _player;
 	[SerializeField, ReadOnly] private float _lightObjectDist = 0.0f;
 
 	private void Start()
 	{
-		if (!TriggerCollider)
-			Debug.LogError($"No {nameof(TriggerCollider)} specified for {nameof(PickupItem)}!");
 		if (!LightObject)
 			Debug.LogError($"No {nameof(LightObject)} specified for {nameof(PickupItem)}!");
 		if (!CollectSound)
@@ -42,6 +41,12 @@ public class PickupItem : MonoBehaviour
 		if (obj.CompareTag("Player"))
 		{
 			AudioSource asrc = obj.GetComponentInChildren<AudioSource>();
+
+			// Add this PickupType to the PlayerController HashSet
+			PlayerController.PickupsCollected.Add(_pickupType);
+
+			if (_pickupType == PickupType.MacGuffin)
+				obj.AddComponent<PlayerControllerEscapeText>();
 
 			if (asrc)
 				asrc.PlayOneShot(CollectSound, CollectSoundVolume);

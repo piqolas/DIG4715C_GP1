@@ -1,34 +1,42 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using piqey.Utilities.Editor;
 
 // [RequireComponent(typeof(CharacterController))]
 public partial class PlayerController : MonoBehaviour
 {
+	public static HashSet<PickupItem.PickupType> PickupsCollected = new();
+	public static PlayerController current;
+
 	[SerializeField]
 	private CharacterController _controller;
 
-	[Header("Movement")]
+	[Header("Movement"), Space]
 
 	[Range(0.0f, 10.0f)]
 	public float MoveSpeed = 6.0f;
-	[Range(1.0f / 3.0f, 3.0f)]
-	public float JumpHeight = 1.5f;
+//	[Range(1.0f / 3.0f, 3.0f)]
+//	public float JumpHeight = 1.5f;
 
-	[Header("Camera Look")]
+	[Header("Camera Look"), Space]
 
 	public Vector2 MouseSensitivity = new(1.0f, 1.0f); // TODO: Vector2Int? Or round to nearest whole number, but cast back to floats for math?
 
-	[Header("Physics")]
+	[Header("Physics"), Space]
 
 	public float Gravity = -9.80665f;
 
-	[Header("Hidden")]
+	[Header("Debug Only"), Space]
 
 	[SerializeField, ReadOnly] private Transform _camTransform;
 	[SerializeField, ReadOnly] private Vector3 _velocity;
 	[SerializeField, ReadOnly] private float _xRot = 0.0f;
 	[SerializeField, ReadOnly] private Vector2 _greatestDelta = Vector2.zero;
-	[SerializeField, ReadOnly] private bool _doJump = false;
+	// [SerializeField, ReadOnly] private bool _doJump = false;
+
+	[SerializeField, ReadOnly] private Vector2 _move = Vector2.zero;
+	// [SerializeField, ReadOnly] private Vector2 _look = Vector2.zero;
 
 #if UNITY_EDITOR
 	[SerializeField, ReadOnly] private bool _isGrounded = false;
@@ -45,6 +53,8 @@ public partial class PlayerController : MonoBehaviour
 			_controller = GetComponent<CharacterController>();
 
 		_camTransform = Camera.main.transform;
+
+		current = this;
 	}
 
 	private void Awake()
@@ -71,12 +81,12 @@ public partial class PlayerController : MonoBehaviour
 
 	private void UpdateInputs()
 	{
-		if (Input.GetButtonDown("Jump"))
-			_doJump = true;
+//		if (Input.GetButtonDown("Jump"))
+//			_doJump = true;
 		// Don't accidentally set this back to false before it happens
 		// in FixedUpdate/HandlePhysics
-		else if (_doJump == true && Input.GetButtonUp("Jump"))
-			_doJump = false;
+//		else if (_doJump == true && Input.GetButtonUp("Jump"))
+//			_doJump = false;
 	}
 
 	private void FixedUpdate()
@@ -91,12 +101,12 @@ public partial class PlayerController : MonoBehaviour
 
 		if (_controller.isGrounded)
 		{
-			if (_doJump)
-			{
-				_velocity.y = Mathf.Sqrt(JumpHeight * -2.0f * Gravity);
-				_doJump = false;
-			}
-			else if (_velocity.y < 0.0f)
+//			if (_doJump)
+//			{
+//				_velocity.y = Mathf.Sqrt(JumpHeight * -2.0f * Gravity);
+//				_doJump = false;
+//			}
+			/*else */if (_velocity.y < 0.0f)
 				// This is supposed to help keep you snapped to the ground;
 				// I don't know if it actually does
 				_velocity.y = -2.0f;
@@ -135,16 +145,27 @@ public partial class PlayerController : MonoBehaviour
 		// _cursorJustLocked = true;
 	}
 
+	public void InputMove(InputAction.CallbackContext ctx)
+	{
+		Vector2 val = ctx.ReadValue<Vector2>();
+		_move = Vector2.ClampMagnitude(val, 1.0f);;
+	}
+
+	// public void InputLook(InputAction.CallbackContext ctx) =>
+	// 	_look = ctx.ReadValue<Vector2>() * Time.deltaTime;
+
 	private void HandleMovement()
 	{
+		/*
 		float x = Input.GetAxis("Horizontal");
 		float z = Input.GetAxis("Vertical");
 
 		Vector3 move = transform.right * x + transform.forward * z;
-		// move = Vector3.ClampMagnitude(move, 1.0f);
 		move = Vector3.ClampMagnitude(move, 1.0f);
+		*/
 
-		_controller.Move(MoveSpeed * Time.deltaTime * move);
+		Vector3 move = transform.right * _move.x + transform.forward * _move.y;
+		_controller.Move(MoveSpeed * Time.deltaTime * move); // move
 
 		// if (Input.GetButtonDown("Jump") && controller.isGrounded)
 		// 	_velocity.y = Mathf.Sqrt(JumpHeight * -2.0f * Gravity);
@@ -157,15 +178,15 @@ public partial class PlayerController : MonoBehaviour
 			return;
 
 		// Swallow the first frame's input after locking to avoid screen-jump
-//		if (_cursorJustLocked)
-//		{
-//			_cursorJustLocked = false;
-//			return;
-//		}
+		// if (_cursorJustLocked)
+		// {
+		// 	_cursorJustLocked = false;
+		// 	return;
+		// }
 
 		Vector2 mouse = new(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-		if (_greatestDelta.magnitude < mouse.magnitude)
+		if (_greatestDelta.sqrMagnitude < mouse.sqrMagnitude)
 			_greatestDelta = mouse;
 
 		mouse *= MouseSensitivity;

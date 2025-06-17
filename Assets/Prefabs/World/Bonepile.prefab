@@ -49,7 +49,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6127806604218117024
 Transform:
   m_ObjectHideFlags: 0
@@ -74,16 +74,16 @@ Projector:
   m_GameObject: {fileID: 7333207757619211445}
   m_Enabled: 1
   serializedVersion: 2
-  m_NearClipPlane: 0.5
-  m_FarClipPlane: 72
-  m_FieldOfView: 131
+  m_NearClipPlane: 0.1
+  m_FarClipPlane: 24
+  m_FieldOfView: 105.8
   m_AspectRatio: 1
   m_Orthographic: 0
   m_OrthographicSize: 10
   m_Material: {fileID: 2100000, guid: 76f9ec991a64f974d9dfd5e22860d6e5, type: 2}
   m_IgnoreLayers:
     serializedVersion: 2
-    m_Bits: 122
+    m_Bits: 250
 --- !u!1001 &2026673594329101162
 PrefabInstance:
   m_ObjectHideFlags: 0

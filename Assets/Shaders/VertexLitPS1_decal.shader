@@ -242,7 +242,7 @@ Shader "Custom/VertexLit_PS1_Decal"
 				o.uv *= o.pos.w;
 			#endif
 
-				o.col = (fixed3)0;
+				o.col = (float3)0;
 
 			#if _VERT_LIGHTMAPPING_ON
 				o.col = SampleAndDecodeLightmapLOD(unity_Lightmap, o.uv2.xy, 0.0);
@@ -253,7 +253,7 @@ Shader "Custom/VertexLit_PS1_Decal"
 
 				// Compute per-vertex lighting
 				//	ShadeVertexLights does up to 4 real-time vertex lights + ambient
-				o.col = ShadeVertexLights(v.vertex, v.normal);
+				o.col += ShadeVertexLights(v.vertex, v.normal);
 
 				// Do fog (this is how it appears to be done in newer pipelines;
 				// leaving it here in case I need to remember where it goes later)
@@ -264,7 +264,7 @@ Shader "Custom/VertexLit_PS1_Decal"
 				return o;
 			}
 
-			fixed4 frag(v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
 				float2 uv = i.uv;
 			#if _AFFINE_ON
@@ -274,32 +274,30 @@ Shader "Custom/VertexLit_PS1_Decal"
 				// Sample & tint
 				// float4 tex = UNITY_SAMPLE_TEX2D(_MainTex, uv) * _Color;
 
-				fixed4 tex = tex2Dproj(_MainTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
-				fixed4 texF = tex2Dproj(_FalloffTex, UNITY_PROJ_COORD(i.uvFalloff));
-				fixed4 lightCol = tex * texF.a;
+				float4 tex = tex2Dproj(_MainTex, UNITY_PROJ_COORD(i.uvShadow)) * _Color;
+				float4 texF = tex2Dproj(_FalloffTex, UNITY_PROJ_COORD(i.uvFalloff));
+				float4 lightCol = tex * texF.a;
 
 				// Capture the affine-interpolated vertex color
 				// float3 lightCol = i.col;
 				// Sample lightmap
-			#if _VERT_LIGHTMAPPING_ON
-				lightCol.rgb *= i.col;
-			#else
+			#if !_VERT_LIGHTMAPPING_ON
 				lightCol.rgb *= SampleAndDecodeLightmap(unity_Lightmap, i.uv2.xy);
 			#endif
 
 				// lit.rgb *= tex.rgb;
 				//lit.rgb = HardLight(lit.rgb, bakedCol.rgb);
 				//fixed4 lit = fixed4(HardLight(tex.rgb, lightmapCol.rgb), 1.0);
-				fixed4 lit = fixed4(tex.rgb * lightCol.rgb, lightCol.a);
+				float4 lit = fixed4(tex.rgb * lightCol.rgb, lightCol.a);
 
 			#if _DEBUG_OOR_ON
-				fixed3 clamped = saturate(tex);
+				float3 clamped = saturate(tex);
 				// diff will be non-zero where col <0 or >1
 				bool3 diff = abs(tex.rgb - clamped.rgb) > 1.0f;
 				// collapse to a single mask (0 = in range,  >0 = out of range)
 				//float mask = max(max(diff.r, diff.g), diff.b);
 				// highlight color:
-				fixed3 highlight = diff ? fixed3(1.0, 1.0, 1.0) : tex.rgb;
+				float3 highlight = diff ? fixed3(1.0, 1.0, 1.0) : tex.rgb;
 				// lerp: when mask == 0 you get original; when mask > 0 you get highlight
 				lit.rgb = highlight;
 			#else
